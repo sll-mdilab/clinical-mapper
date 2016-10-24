@@ -1,0 +1,21 @@
+# Mapping SNOMED-CT to IEEE - direct
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+SELECT DISTINCT
+?source_this_label
+?source_this_id
+?target_this_label
+?target_this_id
+WHERE
+{
+?Class0 <http://ihtsdo.org/snomedct/anatomy#id> "<CODE>"^^xsd:string .
+
+?Class0 rdfs:label ?source_this_label .
+?Class0 <http://ihtsdo.org/snomedct/anatomy#id> ?source_this_id .
+
+?Class0 <http://sll-mdilab.net/ClinicalMapping#sameIEEEX73Concept> ?Term .
+
+?Term rosetta_m:hasTerm_description ?Term_description .
+?Term rosetta_m:hasREFID ?REFID .
+?REFID rosetta_m:rEFIDValue ?target_this_id .
+?Term_description rosetta_m:term_descriptionValue ?target_this_label .
+}

@@ -1,0 +1,10 @@
+#SNOMED-CT term label search in Swedish
+SELECT DISTINCT
+?codeSNOMEDCT
+?snomedLabel
+WHERE
+{
+?BodySiteClass <http://ihtsdo.org/snomedct/anatomy#id> ?codeSNOMEDCT .
+?BodySiteClass <http://snomed.info/sct/se/model#term> ?snomedLabel .
+FILTER ( bif:contains( ?snomedLabel, '<search_string>' ) )
+}

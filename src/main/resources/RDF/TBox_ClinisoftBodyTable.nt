@@ -1,0 +1,7 @@
+<http://sll-mdilab.net/BodySites/Clinisoft/model#label> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#id> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#rowNum> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#ClinisoftBodyTable> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#vertical> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .
+<http://sll-mdilab.net/BodySites/Clinisoft/model#sourceFileName> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#DatatypeProperty> .

@@ -1,0 +1,69 @@
+#SNOMED - IEEEX73 hierarchy DOWN
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+SELECT DISTINCT 
+?snomed_this as ?source_this_label
+?snomed_this_sctid as ?source_this_id
+?ieee_this as ?target_this_label
+?_ieee_this_refid as ?target_this_id
+?map_tree_label 
+?map_tree_id
+WHERE
+{
+{
+SELECT DISTINCT ?snomed_this ?snomed_this_sctid ?ieee_this ?_ieee_this_refid
+sql:group_concat( ?_parent , "|\n") as ?snomed_tree
+sql:group_concat( ?_term_descriptionValue, "|\n") as ?ieee_tree
+sql:group_concat( bif:sprintf("%s|%s", ?_parent, ?_term_descriptionValue), "\n") as ?map_tree_label
+sql:group_concat( bif:sprintf("%s|%s", ?_SCTID, ?_rEFIDValue), "\n") as ?map_tree_id
+sql:group_concat( ?_SCTID , "|\n") as ?sctid_tree
+sql:group_concat( ?_rEFIDValue, "|\n") as ?refid_tree
+?path
+WHERE
+{
+{
+SELECT DISTINCT ?snomed_this ?snomed_this_sctid ?ieee_this ?_ieee_this_refid ?link ?_parent ?path ?dist ?_term_descriptionValue
+?_rEFIDValue ?_SCTID
+WHERE
+{
+?link rdfs:label ?_parent .
+?link <http://ihtsdo.org/snomedct/anatomy#id> ?_SCTID .
+?s rdfs:label ?snomed_this .
+?s <http://ihtsdo.org/snomedct/anatomy#id> ?snomed_this_sctid .
+OPTIONAL
+{
+?s <http://sll-mdilab.net/ClinicalMapping#sameIEEEX73Concept> ?ThisTerm .
+?ThisTerm rosetta_m:hasTerm_description ?ThisTerm_description .
+?ThisTerm_description rosetta_m:term_descriptionValue ?ieee_this .
+?ThisTerm rosetta_m:hasREFID ?thisREFID .
+?thisREFID rosetta_m:rEFIDValue ?_ieee_this_refid .
+}
+OPTIONAL
+{ 
+?link <http://sll-mdilab.net/ClinicalMapping#sameIEEEX73Concept> ?Term .
+?Term rosetta_m:hasTerm_description ?Term_description .
+?Term_description rosetta_m:term_descriptionValue ?_term_descriptionValue .
+?Term rosetta_m:hasREFID ?REFID .
+?REFID rosetta_m:rEFIDValue ?_rEFIDValue .
+}
+
+{
+SELECT DISTINCT ?s ?path ?link ?dist
+WHERE
+{
+?s <http://ihtsdo.org/snomedct/anatomy#broader> ?o
+OPTION (transitive, t_distinct,  t_in(?s), t_out(?o), t_no_cycles, t_min(1), t_max(3), 
+        t_step(?s) as ?link ,
+        t_step('path_id') as ?path , 
+        t_step('step_no') as ?dist , 
+        t_direction 3) . 
+FILTER ( ?s = <http://ihtsdo.org/snomedct/anatomy#<CODE>> ) 
+}
+}
+
+}
+ORDER BY ?path ?dist 
+}
+}
+}}
+ORDER BY DESC( ?snomed_tree ) 
+LIMIT 25

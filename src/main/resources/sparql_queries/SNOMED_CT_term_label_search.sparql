@@ -1,0 +1,10 @@
+#SNOMED-CT term label search
+SELECT DISTINCT
+?codeSNOMEDCT
+?snomedLabel
+WHERE
+{
+?BodySiteClass <http://ihtsdo.org/snomedct/anatomy#id> ?codeSNOMEDCT .
+?BodySiteClass rdfs:label ?snomedLabel .
+FILTER ( bif:contains( ?snomedLabel, '<search_string>' ) )
+}

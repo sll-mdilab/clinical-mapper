@@ -1,0 +1,47 @@
+#Clinisoft to SNOMED-CT - direct best fit
+PREFIX cs_m: <http://sll-mdilab.net/BodySites/Clinisoft/model#>
+PREFIX cs_d: <http://sll-mdilab.net/BodySites/Clinisoft/data#>
+PREFIX sct_d: <http://ihtsdo.org/snomedct/anatomy#>
+PREFIX cmap_m: <http://sll-mdilab.net/ClinicalMapping#>
+SELECT DISTINCT
+?source_this_id
+?source_this_label
+?target_this_label
+?target_this_id
+(((bif:ascii(?_vertB2) - bif:ascii(?_vertB1) +1)) * (?_horB1 - ?_horB2 + 1)) as ?numCells
+WHERE
+{
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#id> "<CODE>"^^xsd:string .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal> ?_horizontal .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#vertical> ?_vertical .
+FILTER( ?_horB1 >= ?_horizontal && ?_horB2 <= ?_horizontal )
+
+FILTER( bif:ascii(?_vertB1) <= bif:ascii(?_vertical) && bif:ascii(?_vertB2) >= bif:ascii(?_vertical) )
+{
+# Find Broader CS term with SNOMED mapping
+?ClinisoftBodyTableBroader <http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal> ?_horB1 .
+?ClinisoftBodyTableBroader <http://sll-mdilab.net/BodySites/Clinisoft/model#vertical> ?_vertB1 .
+?ClinisoftBodyTableBroader <http://sll-mdilab.net/BodySites/Clinisoft/model#vertical2> ?_vertB2 .
+?ClinisoftBodyTableBroader <http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal2> ?_horB2 .
+?ClinisoftBodyTableBroader <http://sll-mdilab.net/ClinicalMapping#sameSNOMEDConcept> ?SnomedTerm .
+?SnomedTerm rdfs:label ?target_this_label .
+?SnomedTerm <http://ihtsdo.org/snomedct/anatomy#id> ?target_this_id .
+?ClinisoftBodyTableBroader cs_m:id ?source_this_id .
+OPTIONAL{ ?ClinisoftBodyTableBroader cs_m:label ?source_this_label . } 
+}
+UNION
+{
+?ClinisoftBodyTable cmap_m:sameSNOMEDConcept ?SnomedTerm .
+?SnomedTerm rdfs:label ?target_this_label .
+?SnomedTerm <http://ihtsdo.org/snomedct/anatomy#id> ?target_this_id .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal> ?_horB1 .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#vertical> ?_vertB1 .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#vertical> ?_vertB2 .
+?ClinisoftBodyTable <http://sll-mdilab.net/BodySites/Clinisoft/model#horizontal> ?_horB2 .
+?ClinisoftBodyTable cs_m:id ?source_this_id .
+OPTIONAL{ ?ClinisoftBodyTable cs_m:label ?source_this_label . } 
+}
+
+}
+ORDER BY ASC(?numCells) 
+LIMIT 1

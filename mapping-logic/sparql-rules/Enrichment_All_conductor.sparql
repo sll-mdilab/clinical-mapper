@@ -1,0 +1,298 @@
+log_enable(3);
+sparql 
+clear graph <http://sll-mdilab.net/ClinicalMapping#graph>;
+
+sparql
+# Insert explicit superClass relation in SNOMED
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?ParentClass <http://ihtsdo.org/snomedct/anatomy#broader> ?Class
+}
+WHERE
+{
+SELECT DISTINCT 
+?Class ?ParentClass 
+WHERE 
+{ 
+graph <http://ihtsdo.org/snomedct/anatomy#graph>
+{
+?Class a owl:Class .
+?Class rdfs:subClassOf ?ParentClass .
+}
+}
+};
+
+sparql
+#Insert raw SNOMED ids
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+}
+WHERE
+{
+#Extract SnomedRefID:s frm terms
+SELECT DISTINCT 
+?term 
+?val
+bif:substring(?val, bif:locate('T-',?val,1), 7) as ?snomedRefBase
+bif:substring(?val, bif:locate('T-',?val,1) + 7, 4) as ?snomedRefRest
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/hRosetta#graph>
+{
+?term rosetta_m:term_descriptionValue ?val .
+FILTER regex( ?val, 'T-') 
+}
+}
+};
+
+sparql# Insert LEFT / RIGHT descriminators
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefLaterality> ?snomedRefRest .
+}
+WHERE
+{
+FILTER regex( ?snomedRefRest, '(-RGT|-LFT)' )
+
+{
+#Extract SnomedRefID:s frm terms
+SELECT DISTINCT 
+?term 
+?val
+bif:substring(?val, bif:locate('T-',?val,1), 7) as ?snomedRefBase
+bif:substring(?val, bif:locate('T-',?val,1) + 7, 4) as ?snomedRefRest
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/hRosetta#graph>
+{
+?term rosetta_m:term_descriptionValue ?val .
+FILTER regex( ?val, 'T-') 
+}
+}
+}
+};
+
+
+sparql
+#Replace T-Y0 with T-D1
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y0', 'T-D1') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y0'))
+}
+}
+};
+
+sparql
+#Replace T-Y1 with T-D2
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y1', 'T-D2') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y1'))
+}
+}
+};
+
+sparql
+#Replace T-Y4 with T-D4
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y4', 'T-D4') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y4'))
+}
+}
+};
+
+sparql
+#Replace T-Y6 with T-D6
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y6', 'T-D6') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y6'))
+}
+}
+};
+
+sparql
+#Replace T-Y7 with T-D7
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y7', 'T-D7') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y7'))
+}
+}
+};
+
+sparql
+#Replace T-Y8 with T-D8
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y8', 'T-D8') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y8'))
+}
+}
+};
+
+sparql
+#Replace T-Y9 with T-D9
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefCorrected
+}
+WHERE
+{
+SELECT DISTINCT 
+?term 
+bif:replace(?snomedRefBase, 'T-Y9', 'T-D9') as ?snomedRefCorrected
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?term <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?snomedRefBase
+FILTER ( bif:strcontains(xsd:string(?snomedRefBase), 'T-Y9'))
+}
+}
+};
+
+sparql
+# insert relation from IEEE to SNOMED 
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?Term <http://sll-mdilab.net/ClinicalMapping#sameSNOMEDConcept> ?Class .
+}
+WHERE
+{
+graph <http://ihtsdo.org/snomedct/anatomy#graph>
+{
+?Class a owl:Class .
+?Class <http://ihtsdo.org/snomedct/anatomy#SNOMEDID> ?_sNOMEDID .
+}
+FILTER( ?_snomedRefBase = xsd:string(?_sNOMEDID) ) 
+{
+SELECT ?Term ?_snomedRefBase 
+WHERE
+{
+?Term rosetta_m:hasTerm_description ?Term_description .
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?Term_description <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?_snomedRefBase .
+}
+}
+
+}
+};
+
+sparql
+# insert relation from SNOMED to IEEE 
+PREFIX rosetta_m: <http://sll-mdilab.net/Rosetta/model#> 
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?Class <http://sll-mdilab.net/ClinicalMapping#sameIEEEX73Concept> ?Term .
+}
+WHERE
+{
+graph <http://ihtsdo.org/snomedct/anatomy#graph>
+{
+?Class a owl:Class .
+?Class <http://ihtsdo.org/snomedct/anatomy#SNOMEDID> ?_sNOMEDID .
+}
+FILTER( ?_snomedRefBase = xsd:string(?_sNOMEDID) ) 
+{
+SELECT ?Term ?_snomedRefBase 
+WHERE
+{
+?Term rosetta_m:hasTerm_description ?Term_description .
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?Term_description <http://sll-mdilab.net/ClinicalMapping#snomedRefBase> ?_snomedRefBase .
+#It must be base term and not with -LFT -RGT
+MINUS{ ?Term_description <http://sll-mdilab.net/ClinicalMapping#snomedRefLaterality> ?_snomedRefLaterality } 
+}
+}
+
+}
+};
+
+
+sparql
+#Triple count
+SELECT count(*) 
+WHERE 
+{ 
+GRAPH <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+?s ?p ?o .
+}
+};
+
+checkpoint;

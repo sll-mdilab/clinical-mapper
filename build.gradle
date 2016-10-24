@@ -1,0 +1,79 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+version = '0.2.6'
+war {
+    from 'extra'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+}
+
+repositories {
+    mavenCentral()
+    flatDir {
+    	dirs '../t5-repo','lib'
+    }
+}
+
+configurations {
+    providedRuntime
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (it.requested.name == 'log4j') {
+            it.useTarget 'org.slf4j:log4j-over-slf4j:1.7.10'
+        }
+    }
+    exclude module: 'slf4j-log4j12'
+}
+
+dependencies {
+	compile 'org.slf4j:slf4j-api:1.7.10'
+    compile 'org.slf4j:jcl-over-slf4j:1.7.10'
+    compile 'org.slf4j:log4j-over-slf4j:1.7.10'
+    compile 'ch.qos.logback:logback-core:1.1.7'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    
+    compile 'commons-collections:commons-collections:3.2'
+    compile 'org.springframework:spring-core:4.1.4.RELEASE'
+    compile 'org.springframework:spring-context:4.1.4.RELEASE'
+    compile 'org.springframework:spring-web:4.1.4.RELEASE'
+    compile 'org.springframework:spring-jdbc:4.1.6.RELEASE'
+    compile 'org.springframework.security:spring-security-web:4.0.3.RELEASE'
+    compile 'org.springframework.security:spring-security-config:4.0.3.RELEASE'
+    compile 'org.mitre:openid-connect-client:1.2.4'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-base:1.4'
+    compile 'ca.uhn.hapi.fhir:hapi-fhir-structures-dstu2:1.4'
+    compile 'org.codehaus.woodstox:woodstox-core-asl:4.4.1'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.5.4'
+    compile 'org.postgresql:postgresql:9.4-1205-jdbc42'
+    compile 'org.apache.commons:commons-dbcp2:2.1.1'
+    compile 'org.apache.jena:jena-core:2.13.0'
+    compile 'org.apache.jena:jena-arq:2.13.0'
+    
+    compile name: 'virt_jena2'
+    compile name: 'virtjdbc4'
+    
+    compile name: 't5-commons-1.0'
+    
+    providedCompile 'javax.servlet:javax.servlet-api:3.1.0'
+    
+    testCompile 'junit:junit:4.+'
+    testCompile 'org.mockito:mockito-core:1.+'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+configurations.all {
+   resolutionStrategy {
+      force 'org.bouncycastle:bcprov-jdk15on:1.54'
+   }
+}

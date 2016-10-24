@@ -1,0 +1,10 @@
+#INSERT SNOMED - Clinisoft mapping
+PREFIX cs_d: <http://sll-mdilab.net/BodySites/Clinisoft/data#>
+PREFIX sct_d: <http://ihtsdo.org/snomedct/anatomy#>
+PREFIX cmap_m: <http://sll-mdilab.net/ClinicalMapping#>
+INSERT INTO <http://sll-mdilab.net/ClinicalMapping#graph>
+{
+sct_d:<SCT_ID> cmap_m:sameClinisoftConcept cs_d:ClinisoftBodyTable__<CS_ID> .
+cs_d:ClinisoftBodyTable__<CS_ID> cmap_m:sameSNOMEDConcept sct_d:<SCT_ID> .
+}
+
